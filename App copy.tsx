@@ -1,98 +1,83 @@
-// import { View, Text, FlatList, StyleSheet } from 'react-native';
-// import React, { useEffect, useState } from 'react';
+// import {View, FlatList, StyleSheet, RefreshControl} from 'react-native';
+// import React, {useEffect, useState} from 'react';
+// import {getToken, getTasks} from './services/api';
+// import TaskItem from './components/TaskItem';
+// import {Searchbar} from 'react-native-paper';
+// import Scanner from './components/Scanner';
 
 // export default function App() {
 //   const [token, setToken] = useState('');
 //   const [data, setData] = useState([]);
-  
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const [isScannerVisible, setIsScannerVisible] = useState(false);
+
 //   useEffect(() => {
-//     getToken();
+//     const fetchData = async () => {
+//       const resToken = await getToken();
+//       setToken(resToken);
+//       const responseJson = await getTasks('Bearer ' + resToken);
+//       setData(responseJson);
+//     };
+
+//     // Fetch data on mount
+//     fetchData();
+
+//     // Fetch data every 60 minutes
+//     const intervalId = setInterval(fetchData, 60 * 60 * 1000);
+
+//     // Clean up interval on unmount
+//     return () => clearInterval(intervalId);
 //   }, []);
 
-//   const getToken = () => {
-//     fetch(`https://api.baubuddy.de/index.php/login`, {
-//       method: 'POST',
-//       headers: {
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json',
-//         Authorization: 'Basic QVBJX0V4cGxvcmVyOjEyMzQ1NmlzQUxhbWVQYXNz',
-//       },
-//       body: JSON.stringify({
-//         username: '365',
-//         password: '1',
-//       }),
-//     })
-//       .then(response => response.json())
-//       .then(responseJson => {
-//         const resToken = responseJson['oauth']['access_token'];
-//         setToken(resToken);
-//         getTasks('Bearer ' + resToken);
-//       })
-//       .catch(error => {
-//         console.warn('error->', error);
-//       });
+//   const filterData = (data, query) => {
+//     if (!query) {
+//       return data;
+//     }
+
+//     return data.filter(item => {
+//       const title = item.title.toLowerCase();
+//       const description = item.description.toLowerCase();
+//       const task = item.task.toLowerCase();
+//       const colorCode = item.colorCode.toLowerCase();
+//       const searchTerm = query.toLowerCase();
+
+//       return (
+//         title.includes(searchTerm) ||
+//         description.includes(searchTerm) ||
+//         task.includes(searchTerm) ||
+//         colorCode.includes(searchTerm)
+//       );
+//     });
 //   };
 
-//   const getTasks = (resToken: string) => {
-//     fetch('https://api.baubuddy.de/dev/index.php/v1/tasks/select', {
-//       method: 'GET',
-//       headers: {
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json',
-//         Authorization: resToken,
-//       },
-//     })
-//       .then(response => response.json())
-//       .then(responseJson => {
-//         setData(responseJson);
-//       })
-//       .catch(error => {
-//         console.warn('error->', error);
-//       });
+//   const filteredData = filterData(data, searchQuery);
+
+//   const handleScan = data => {
+//     setSearchQuery(data);
+//     setIsScannerVisible(false);
 //   };
-
-//   const renderText = ({ item }: { item: { colorCode: string, task: string, title: string, description: string } }) => {
-//     return (
-//       <View
-//         style={{
-//           marginVertical: 5,
-//           borderWidth: 1,
-//           borderColor: '#ccc',
-//           borderRadius: 10,
-//           paddingHorizontal: 10,
-//           paddingVertical: 5,
-//           backgroundColor: item.colorCode, // Set the backgroundColor of the view to the value of the colorCode property
-//         }}
-//       >
-//         <Text style={styles.task}>{item.task}</Text>
-//         <Text style={styles.title}>{item.title}</Text>
-//         <Text style={styles.description}>{item.description}</Text>
-//       </View>
-//     );
-//   };
-
-//   const styles = StyleSheet.create({
-//     task: {
-//       fontWeight: 'bold',
-//       color: '#fff', // Use a contrasting color to the background color of the view
-//       fontSize: 30,
-//     },
-//     title: {
-//       color: '#fff',
-//       fontSize: 22,
-//     },
-//     description: {
-//       color: '#fff',
-//       fontSize: 14,
-//     },
-//   });
-
 
 //   return (
 //     <View>
+//       <Searchbar
+//         placeholder="Search"
+//         onChangeText={query => setSearchQuery(query)}
+//         value={searchQuery}
+//         style={{
+//           marginVertical: 10,
+//           marginHorizontal: 20,
+//         }}
+//       />
+
+//       <Scanner
+//         isVisible={isScannerVisible}
+//         onClose={() => setIsScannerVisible(false)}
+//         onScan={handleScan}
+//       />
+
 //       <FlatList
-//         data={data}
-//         renderItem={renderText}
+//         data={filteredData}
+//         renderItem={({item}) => <TaskItem item={item} />}
 //         keyExtractor={(item, index) => index.toString()}
 //         style={{
 //           backgroundColor: '#F5F5F5',
@@ -102,6 +87,12 @@
 //         contentContainerStyle={{
 //           padding: 10,
 //         }}
+//         refreshControl={
+//           <RefreshControl
+//             refreshing={false}
+//             onRefresh={() => console.log('Refresh')}
+//           />
+//         }
 //       />
 //     </View>
 //   );
