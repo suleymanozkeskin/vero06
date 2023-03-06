@@ -3,12 +3,15 @@ import React, { useEffect, useState } from 'react';
 import { getToken, getTasks } from './services/api';
 import TaskItem from './components/TaskItem';
 import { Searchbar } from 'react-native-paper';
+import Scanner from './components/Scanner';
 
 
 export default function App() {
   const [token, setToken] = useState('');
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isScannerVisible, setIsScannerVisible] = useState(false);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +52,11 @@ export default function App() {
 
   const filteredData = filterData(data, searchQuery);
 
+  const handleScan = (data) => {
+    setSearchQuery(data);
+    setIsScannerVisible(false);
+  };
+
   return (
     <View>
       <Searchbar
@@ -60,6 +68,14 @@ export default function App() {
           marginHorizontal: 20,
         }}
       />
+
+      <Scanner 
+      isVisible={isScannerVisible} 
+      onClose={() => setIsScannerVisible(false)} 
+      onScan={handleScan} 
+      />
+
+
       <FlatList
         data={filteredData}
         renderItem={({ item }) => <TaskItem item={item} />}
@@ -82,3 +98,7 @@ export default function App() {
     </View>
   );
 }
+
+
+
+
