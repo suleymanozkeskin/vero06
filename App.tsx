@@ -1,4 +1,4 @@
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { getToken, getTasks } from './services/api';
 import TaskItem from './components/TaskItem';
@@ -11,12 +11,21 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    getToken().then(resToken => {
+    const fetchData = async () => {
+      const resToken = await getToken();
       setToken(resToken);
-      getTasks('Bearer ' + resToken).then(responseJson => {
-        setData(responseJson);
-      });
-    });
+      const responseJson = await getTasks('Bearer ' + resToken);
+      setData(responseJson);
+    };
+  
+    // Fetch data on mount
+    fetchData();
+  
+    // Fetch data every 60 minutes
+    const intervalId = setInterval(fetchData, 60 * 60 * 1000);
+  
+    // Clean up interval on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const filterData = (data, query) => {
@@ -63,6 +72,12 @@ export default function App() {
         contentContainerStyle={{
           padding: 10,
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => console.log('Refresh')}
+          />
+        }
       />
     </View>
   );
