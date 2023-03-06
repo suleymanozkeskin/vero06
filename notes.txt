@@ -2,3 +2,9 @@ npm i react-native-safe-area-context
 
 npm i react-native-camera
 
+
+
+to run: react-native start --reset-cache
+
+to check devices: adb devices
+
