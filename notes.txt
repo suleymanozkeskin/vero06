@@ -1,0 +1,4 @@
+npm i react-native-safe-area-context
+
+npm i react-native-camera
+
