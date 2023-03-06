@@ -2,10 +2,13 @@ import { View, FlatList, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { getToken, getTasks } from './services/api';
 import TaskItem from './components/TaskItem';
+import { Searchbar } from 'react-native-paper';
+
 
 export default function App() {
   const [token, setToken] = useState('');
   const [data, setData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     getToken().then(resToken => {
@@ -16,10 +19,40 @@ export default function App() {
     });
   }, []);
 
+  const filterData = (data, query) => {
+    if (!query) {
+      return data;
+    }
+
+    return data.filter(item => {
+      const title = item.title.toLowerCase();
+      const description = item.description.toLowerCase();
+      const task = item.task.toLowerCase();
+      const colorCode = item.colorCode.toLowerCase();
+      const searchTerm = query.toLowerCase();
+
+      return title.includes(searchTerm)
+        || description.includes(searchTerm)
+        || task.includes(searchTerm)
+        || colorCode.includes(searchTerm);
+    });
+  };
+
+  const filteredData = filterData(data, searchQuery);
+
   return (
     <View>
+      <Searchbar
+        placeholder="Search"
+        onChangeText={query => setSearchQuery(query)}
+        value={searchQuery}
+        style={{
+          marginVertical: 10,
+          marginHorizontal: 20,
+        }}
+      />
       <FlatList
-        data={data}
+        data={filteredData}
         renderItem={({ item }) => <TaskItem item={item} />}
         keyExtractor={(item, index) => index.toString()}
         style={{
