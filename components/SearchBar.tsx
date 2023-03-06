@@ -15,7 +15,7 @@ const SearchBar = ({ onSearch }) => {
         value={searchQuery}
         onChangeText={setSearchQuery}
         onSubmitEditing={handleSearch}
-        placeholder="Search"
+        placeholder="Search with text"
       />
     </View>
   );
