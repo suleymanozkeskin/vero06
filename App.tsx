@@ -8,6 +8,29 @@ import Scanner from './components/Scanner';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
 
+const styles = StyleSheet.create({
+  searchButton: {
+    backgroundColor: '#1E88E5',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 12,
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  searchButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  // searchButtonWrapper: {
+  //   borderWidth: 2,
+  //   borderColor: '#000',
+  //   borderRadius: 12,
+  //   overflow: 'hidden',
+  // },
+});
+
+
 export default function App() {
   const [token, setToken] = useState('');
   const [data, setData] = useState([]);
@@ -81,9 +104,17 @@ export default function App() {
               marginHorizontal: 20,
             }}
           />
-          <TouchableOpacity onPress={() => setIsScannerVisible(true)}>
-            <Text>Search with QR Code</Text>
+
+          <View style={styles.searchButtonWrapper}>
+          <TouchableOpacity
+            style={[styles.searchButton, styles.searchButtonText]}
+            onPress={() => setIsScannerVisible(true)}>
+            <Text style={styles.searchButtonText}>Search with QR Code</Text>
           </TouchableOpacity>
+          </View>
+
+
+          
 
           <FlatList
             data={filteredData}
