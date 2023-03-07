@@ -1,13 +1,13 @@
 <h1>Project Title<h1>
 
-A brief description of the project.
+<h4>A brief description of the project.<h4>
 
 <h2>Table of Contents<h1>
 
-- Installation
-- Usage
-- Screenshots
-- License
+<h4> - Installation <h4>
+<h4> - Usage <h4>
+<h4> - Screenshots <h4>
+<h4> - License <h4>
 
 <h2>Installation<h2>
 
